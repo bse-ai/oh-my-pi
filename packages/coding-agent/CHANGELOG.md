@@ -694,7 +694,7 @@
 - Reduced memory usage during long responses while thinking is hidden ([#11632](https://github.com/can1357/oh-my-pi/pull/11632) by [@redsolver](https://github.com/redsolver)).
 ### Added
 
-- The status-line `usage` segment now shows LiteLLM budgets: a daily key budget renders in the `1d` bucket and a monthly key or user budget in the `mo` bucket.
+- The status-line `usage` segment now shows LiteLLM budgets: a daily key budget renders in the `1d` bucket and a monthly key or user budget in the `mo` bucket ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
 
 ## [18.1.17] - 2026-09-10
 
