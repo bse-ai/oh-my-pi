@@ -4,6 +4,8 @@
 
 ## [18.2.6] - 2026-09-18
 
+- Added historical decimation prompt-cache breakpoints every 15 user turns on Anthropic requests, so long conversations retain stable cached prefixes during branching, rewinds, and session resume ([#11665](https://github.com/can1357/oh-my-pi/pull/11665) by [@camjac251](https://github.com/camjac251)).
+- Added a LiteLLM usage provider: the `/usage` command and status-line `usage` segment now show the virtual key's and owning user's spend against `max_budget` per budget window (daily/weekly/monthly), read from the proxy's self-service `/key/info` and `/user/info` routes.
 ### Fixed
 
 - Fixed Anthropic prompt-cache head re-baselining on every memory recall refresh: the system breakpoint now anchors on the last stable segment instead of the volatile recall suffix, and the stable-system fingerprint ignores recall blocks, so a recall refresh re-bills only the suffix instead of the whole tools+system head.

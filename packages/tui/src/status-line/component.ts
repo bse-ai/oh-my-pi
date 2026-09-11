@@ -1874,7 +1874,9 @@ export class StatusLineComponent<TSession extends StatusLineSession = StatusLine
 										: undefined;
 				const windowClass =
 					subscriptionWindow ??
-					((context.provider === "cursor" || context.provider === "opencode-go") &&
+					((context.provider === "cursor" ||
+						context.provider === "opencode-go" ||
+						context.provider === "litellm") &&
 					(windowId === "monthly" || windowId === "30d")
 						? "monthly"
 						: undefined);
