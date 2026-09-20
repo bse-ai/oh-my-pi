@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed Anthropic prompt-cache rewrites after a `drop_block` prefix mismatch: thinking blocks the API reports dropping on a successful response are replayed unchanged (the server drops them again for free) instead of being omitted from every later request, which changed the cached prefix from that message forward. The 400 path still omits them.
+
 ## [18.2.6] - 2026-09-18
 
 ### Fixed
