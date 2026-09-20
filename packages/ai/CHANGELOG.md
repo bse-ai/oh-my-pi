@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Extended the idle Anthropic prompt-cache keep-alive from a fixed 3 refreshes to a 45-minute idle budget, so a prefix stays cached across longer think-time gaps.
+
 ## [18.2.6] - 2026-09-18
 
 ### Fixed
