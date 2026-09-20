@@ -5,6 +5,7 @@
 ### Added
 
 - Added `ANTHROPIC_CACHE_REFRESH_HOSTS` to opt Anthropic-protocol gateways into the idle prompt-cache keep-alive refresh. The refresh previously ran only against the official Anthropic API because it reused the leaked-thinking healing exemption as its endpoint gate, which silently disabled it behind every `ANTHROPIC_BASE_URL` / `models.yml` proxy ([#12574](https://github.com/can1357/oh-my-pi/pull/12574) by [@bse-ai](https://github.com/bse-ai)).
+- Extended the idle prompt-cache keep-alive from a fixed 3 refreshes to a 45-minute idle budget. A refresh costs one cache read of the prefix while a lapse costs a full cache write of it — roughly 50x more per token — so the old turn-count cap stopped paying to stay warm well before the break-even ([#12574](https://github.com/can1357/oh-my-pi/pull/12574) by [@bse-ai](https://github.com/bse-ai)).
 
 ## [18.2.6] - 2026-09-18
 
