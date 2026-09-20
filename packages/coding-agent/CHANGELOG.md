@@ -9,7 +9,7 @@
 ### Added
 
 - Added `Target.getTargets` to the browser relay's CDP surface so clients can enumerate eligible pages without attaching to or claiming them.
-- Added `recap.maxContextTokens` (default 100K): the idle recap's side-channel turn is skipped once the context exceeds it, so a status line no longer re-reads and perturbs a large cached prefix ([#12571](https://github.com/can1357/oh-my-pi/pull/12571) by [@bse-ai](https://github.com/bse-ai)).
+- Added `recap.maxContextTokens` (default 100K) to skip the idle recap once the context is large enough that re-reading it would disturb the cached prefix ([#12571](https://github.com/can1357/oh-my-pi/pull/12571) by [@bse-ai](https://github.com/bse-ai)).
 
 ### Fixed
 
