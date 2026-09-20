@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { ANTHROPIC_IMAGE_MAX_DIMENSION } from "@oh-my-pi/pi-ai";
+import { ANTHROPIC_IMAGE_MAX_DIMENSION } from "@oh-my-pi/pi-ai/providers/anthropic";
 import { readImageMetadata, removeSyncWithRetries } from "@oh-my-pi/pi-utils";
 import { loadImageInput } from "../src/utils/image-loading";
 import { InvalidImageDataError } from "@oh-my-pi/pi-tui/chat/image-loading";

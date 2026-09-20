@@ -1,7 +1,7 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
 import * as os from "node:os";
 import * as path from "node:path";
-import { ANTHROPIC_IMAGE_MAX_DIMENSION } from "@oh-my-pi/pi-ai";
+import { ANTHROPIC_IMAGE_MAX_DIMENSION } from "@oh-my-pi/pi-ai/providers/anthropic";
 import { resetSettingsForTest, Settings } from "@oh-my-pi/pi-coding-agent/config/settings";
 import { formatScreenshot, resizeImage } from "@oh-my-pi/pi-coding-agent/utils/image-resize";
 

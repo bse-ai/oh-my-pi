@@ -1,4 +1,4 @@
-import { ANTHROPIC_IMAGE_MAX_DIMENSION } from "@oh-my-pi/pi-ai";
+import { ANTHROPIC_IMAGE_MAX_DIMENSION } from "@oh-my-pi/pi-ai/providers/anthropic";
 import { ADVISOR_DEFAULT_BUDGET_PER_UPDATE } from "../advisor/emission-guard";
 import { THINKING_EFFORTS } from "@oh-my-pi/pi-catalog/effort";
 import { DEFAULT_SHARE_URL, DEFAULT_STREAM_URL } from "@oh-my-pi/pi-wire";
