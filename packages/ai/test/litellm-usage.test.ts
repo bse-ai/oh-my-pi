@@ -69,7 +69,7 @@ describe("litellm usage provider", () => {
 
 		expect(report).not.toBeNull();
 		expect(report!.limits.map(l => l.id)).toEqual(["litellm:key:daily", "litellm:user:monthly"]);
-		expect(report!.limits.map(l => l.label)).toEqual(["Key · daily", "User · monthly"]);
+		expect(report!.limits.map(l => l.label)).toEqual(["Key · Daily", "User · Monthly"]);
 		expect(report!.limits.map(l => l.scope.windowId)).toEqual(["daily", "monthly"]);
 
 		const key = report!.limits[0];
@@ -168,12 +168,45 @@ describe("litellm usage provider", () => {
 		expect(report!.limits.map(l => l.id)).toEqual(["litellm:user:monthly"]);
 	});
 
-	it("returns null when both management routes fail", async () => {
+	it("keeps the most-used budget when the key and its user share a window", async () => {
+		// Both land in one status-line window class and the renderer keeps only the
+		// first candidate, so emitting key-then-user unconditionally would hide a
+		// nearly exhausted user budget behind a healthier key budget.
 		const report = await litellmUsageProvider.fetchUsage(
 			makeParams(),
 			makeCtx({
-				"/key/info": { status: 401, body: {} },
-				"/user/info": { status: 401, body: {} },
+				"/key/info": { body: KEY_INFO },
+				"/user/info": {
+					body: { ...USER_INFO, user_info: { ...USER_INFO.user_info, spend: 95, budget_duration: "1d" } },
+				},
+			}),
+		);
+
+		expect(report!.limits.map(l => l.id)).toEqual(["litellm:user:daily"]);
+		expect(report!.limits[0].amount.usedFraction).toBeCloseTo(0.95);
+	});
+
+	it("throws the auth status when every management route rejects the credential", async () => {
+		// A revoked key must reach checkCredentials() as a failure. Returning null
+		// is the transient path, and it would let the cached last-good budget keep
+		// serving indefinitely for a key the proxy no longer accepts.
+		await expect(
+			litellmUsageProvider.fetchUsage(
+				makeParams(),
+				makeCtx({
+					"/key/info": { status: 401, body: {} },
+					"/user/info": { status: 401, body: {} },
+				}),
+			),
+		).rejects.toThrow(/401/);
+	});
+
+	it("returns null when both management routes fail without rejecting the credential", async () => {
+		const report = await litellmUsageProvider.fetchUsage(
+			makeParams(),
+			makeCtx({
+				"/key/info": { status: 500, body: {} },
+				"/user/info": { status: 503, body: {} },
 			}),
 		);
 

@@ -12,6 +12,7 @@
 
 import { getDefaultModelDiscoveryBaseUrl } from "@oh-my-pi/pi-catalog/provider-models";
 import { toNumber } from "@oh-my-pi/pi-catalog/utils";
+import { ProviderHttpError } from "../error";
 import type {
 	UsageAmount,
 	UsageFetchContext,
@@ -107,7 +108,9 @@ function budgetLimit(args: {
 	const amount = budgetAmount(spend, maxBudget);
 	return {
 		id: `${PROVIDER}:${args.owner}:${windowId}`,
-		label: `${args.label} · ${windowId}`,
+		// Display label, not the bucketing id: siblings show `Monthly`/`7d`, so a
+		// raw lowercase duration here would read as a different kind of value.
+		label: `${args.label} · ${spec?.label ?? windowId}`,
 		scope: { provider: PROVIDER, ...(spec ? { windowId: spec.id } : {}) },
 		...(window ? { window } : {}),
 		amount,
@@ -174,22 +177,32 @@ export function parseLitellmUserLimits(payload: unknown): UsageLimit[] {
 	return limit ? [limit] : [];
 }
 
+/**
+ * One management route's outcome. A missing `data` with an `authStatus` is the
+ * only definitive failure: the deployment restricting a route and the key being
+ * revoked are indistinguishable per-route, so the decision needs both results.
+ */
+interface LitellmRouteOutcome {
+	data?: unknown;
+	authStatus?: number;
+}
+
 async function fetchLitellmJson(
 	ctx: UsageFetchContext,
 	url: string,
 	init: RequestInit,
 	source: LitellmUsageSource,
-): Promise<unknown | undefined> {
+): Promise<LitellmRouteOutcome> {
 	try {
 		const response = await ctx.fetch(url, init);
 		if (!response.ok) {
 			ctx.logger?.warn("LiteLLM usage request failed", { status: response.status, provider: PROVIDER, source });
-			return undefined;
+			return response.status === 401 || response.status === 403 ? { authStatus: response.status } : {};
 		}
-		return await response.json();
+		return { data: await response.json() };
 	} catch (error) {
 		ctx.logger?.warn("LiteLLM usage request error", { provider: PROVIDER, source, error: String(error) });
-		return undefined;
+		return {};
 	}
 }
 
@@ -210,13 +223,41 @@ async function fetchLitellmUsage(params: UsageFetchParams, ctx: UsageFetchContex
 	const fetchedAt = Date.now();
 	// Either route may be restricted on a given deployment; a failure on one
 	// must not discard the budgets the other returned.
-	const [keyInfo, userInfo] = await Promise.all([
+	const [keyRoute, userRoute] = await Promise.all([
 		fetchLitellmJson(ctx, `${root}/key/info`, init, "key-info"),
 		fetchLitellmJson(ctx, `${root}/user/info`, init, "user-info"),
 	]);
-	if (keyInfo === undefined && userInfo === undefined) return null;
+	const keyInfo = keyRoute.data;
+	const userInfo = userRoute.data;
+	if (keyInfo === undefined && userInfo === undefined) {
+		// No route succeeded. If any rejected the credential outright, throw so
+		// `checkCredentials()` reports a failure and the cached last-good budget is
+		// purged; returning null is the transient path, which would let a revoked
+		// key keep serving its last known budget indefinitely.
+		const authStatus = keyRoute.authStatus ?? userRoute.authStatus;
+		if (authStatus !== undefined) {
+			throw new ProviderHttpError(`LiteLLM management routes returned ${authStatus}`, authStatus);
+		}
+		return null;
+	}
 
-	const limits = [...parseLitellmKeyLimits(keyInfo), ...parseLitellmUserLimits(userInfo)];
+	// A key and its owning user can carry the same `budget_duration`. Both land in
+	// one status-line window class, and the renderer keeps only the first
+	// candidate per class — so emitting both in fixed key-then-user order hides a
+	// nearly exhausted user budget behind a healthier key budget. Keep the
+	// most-used limit for each window instead: whichever will block the next
+	// request first is the one worth showing.
+	const byWindow = new Map<string, UsageLimit>();
+	for (const limit of [...parseLitellmKeyLimits(keyInfo), ...parseLitellmUserLimits(userInfo)]) {
+		const key = limit.scope?.windowId ?? "lifetime";
+		const incumbent = byWindow.get(key);
+		// `usedFraction` is optional on the shared amount shape; an unmeasurable
+		// window never displaces one we can rank.
+		if (!incumbent || (limit.amount.usedFraction ?? -1) > (incumbent.amount.usedFraction ?? -1)) {
+			byWindow.set(key, limit);
+		}
+	}
+	const limits = [...byWindow.values()];
 
 	const metadata: Record<string, unknown> = {};
 	if (isRecord(keyInfo) && isRecord(keyInfo.info) && typeof keyInfo.info.key_alias === "string") {

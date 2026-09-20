@@ -639,7 +639,10 @@ describe("usage status-line segment", () => {
 		expect(content).toContain("40%");
 	});
 
-	it("does not render monthly usage for providers outside the single-bucket gate", async () => {
+	it("renders a monthly window for any provider that reports one", async () => {
+		// Window class is a property of the limit, not of a provider allowlist.
+		// github-copilot was never in the old allowlist, so it is the regression
+		// guard: a provider stating `monthly` renders without a renderer change.
 		const component = makeComponent(
 			[
 				{
@@ -654,8 +657,8 @@ describe("usage status-line segment", () => {
 		await flushUsageRefresh();
 		const content = stripVTControlCharacters(component.getTopBorder(200).content);
 
-		expect(content).not.toContain("mo");
-		expect(content).not.toContain("42%");
+		expect(content).toContain("mo");
+		expect(content).toContain("42%");
 	});
 
 	it("uses a distinct error color at the eighty-percent threshold", () => {
@@ -835,14 +838,7 @@ describe("usage status-line segment", () => {
 	it("ignores non-canonical windows without a reported span", async () => {
 		const component = makeComponent([
 			{
-				limits: [
-					{ scope: { windowId: "default" }, window: {}, amount: { usedFraction: 0.24 } },
-					{
-						scope: { windowId: "monthly" },
-						window: { durationMs: 30 * 86_400_000 },
-						amount: { usedFraction: 0.5 },
-					},
-				],
+				limits: [{ scope: { windowId: "default" }, window: {}, amount: { usedFraction: 0.24 } }],
 			},
 		]);
 
@@ -851,7 +847,6 @@ describe("usage status-line segment", () => {
 		const content = stripVTControlCharacters(component.getTopBorder(200).content);
 
 		expect(content).not.toContain("24%");
-		expect(content).not.toContain("50%");
 	});
 
 	it("prefers canonical window ids over a conflicting reported span", async () => {

@@ -2,10 +2,19 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added a LiteLLM usage provider: the `/usage` command and status-line `usage` segment now show the virtual key's and owning user's spend against `max_budget` per budget window (daily/weekly/monthly), read from the proxy's self-service `/key/info` and `/user/info` routes ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
+
+### Fixed
+
+- Fixed a revoked LiteLLM virtual key being reported as unknown rather than failed: when every management route rejects the credential the provider now throws the auth status, so `checkCredentials()` fails and the cached last-good budget is purged instead of served indefinitely ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
+- Fixed a nearly exhausted LiteLLM user budget being hidden behind a healthier key budget when both share a `budget_duration`; the most-used limit now wins that window ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
+
 ## [18.2.6] - 2026-09-18
 
 - Added historical decimation prompt-cache breakpoints every 15 user turns on Anthropic requests, so long conversations retain stable cached prefixes during branching, rewinds, and session resume ([#11665](https://github.com/can1357/oh-my-pi/pull/11665) by [@camjac251](https://github.com/camjac251)).
-- Added a LiteLLM usage provider: the `/usage` command and status-line `usage` segment now show the virtual key's and owning user's spend against `max_budget` per budget window (daily/weekly/monthly), read from the proxy's self-service `/key/info` and `/user/info` routes ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
+
 ### Fixed
 
 - Fixed Anthropic prompt-cache head re-baselining on every memory recall refresh: the system breakpoint now anchors on the last stable segment instead of the volatile recall suffix, and the stable-system fingerprint ignores recall blocks, so a recall refresh re-bills only the suffix instead of the whole tools+system head.

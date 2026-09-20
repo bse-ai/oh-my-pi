@@ -17,6 +17,7 @@
 - Fixed Edit previews and application panicking on Unicode no-op edits and overlapping duplicate matches.
 - Fixed live subagent messages getting stuck behind persisted-agent discovery, and roster discovery looping on dot-named transcripts.
 - Fixed llama.cpp discovery of PrismML Bonsai 2 27B GGUFs: built-in and custom-named providers now share catalog rules for chat-completions routing and the Qwen 3.8 thinking ladder (`low`/`medium`/`xhigh`), including cached models.
+- Fixed the status line's monthly usage window being gated on a hard-coded provider allowlist: the window class now comes from the limit's own window id or reported span, so any provider reporting a monthly budget renders one ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
 
 ## [18.2.6] - 2026-09-18
 
