@@ -4,7 +4,7 @@
 
 ### Added
 
-- Extended the idle Anthropic prompt-cache keep-alive from a fixed 3 refreshes to a 45-minute idle budget, so a prefix stays cached across longer think-time gaps.
+- Extended the idle Anthropic prompt-cache keep-alive from a fixed 3 refreshes to a 45-minute idle budget, so a prefix stays cached across longer think-time gaps ([#12615](https://github.com/can1357/oh-my-pi/pull/12615) by [@bse-ai](https://github.com/bse-ai)).
 
 ## [18.2.6] - 2026-09-18
 
