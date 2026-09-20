@@ -9,6 +9,7 @@
 ### Added
 
 - Added `Target.getTargets` to the browser relay's CDP surface so clients can enumerate eligible pages without attaching to or claiming them.
+- Added `images.maxDimension` (default 1568) to cap the long edge of images at insertion time, so a cost-sensitive user can send smaller images to the model ([#12573](https://github.com/can1357/oh-my-pi/pull/12573) by [@bse-ai](https://github.com/bse-ai)).
 
 ### Fixed
 
