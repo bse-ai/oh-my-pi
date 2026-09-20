@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added `ANTHROPIC_CACHE_REFRESH_HOSTS` to opt Anthropic-protocol gateways into the idle prompt-cache keep-alive refresh. The refresh previously ran only against the official Anthropic API because it reused the leaked-thinking healing exemption as its endpoint gate, which silently disabled it behind every `ANTHROPIC_BASE_URL` / `models.yml` proxy.
+
 ## [18.2.6] - 2026-09-18
 
 ### Fixed
