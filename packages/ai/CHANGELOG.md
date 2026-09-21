@@ -19,6 +19,7 @@
 - Import Anthropic streaming and provider request helpers from `@oh-my-pi/pi-ai/providers/anthropic` rather than the package root.
 - Moved `NO_AUTH_SENTINEL` from `providers/openai-shared` to `auth-retry`.
 - Anthropic organization-level OAuth permission errors now rotate to an eligible sibling credential instead of failing permanently.
+- Anthropic organization-level OAuth permission errors now reliably rotate to sibling credentials and persist blocks across usage reports.
 - Fixed error handling for provider responses that do not include token usage information.
 
 ## [18.2.6] - 2026-09-18
