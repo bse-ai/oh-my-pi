@@ -21,6 +21,8 @@
 - Added image, web, speech, dictation, judge, and memory model roles with ordered fallbacks, automatic migration of legacy backend settings, and `omp models --kind` filtering.
 - Added native OpenRouter image generation and model-selected web-plugin search, plus live TypeSafe judge-model discovery.
 - Fixed Codex rejecting the sloppy edit tool's grammar.
+- Added `find` tool for semantic workspace searching, allowing agents to locate behaviors and symbols using natural language
+- Added `find` CLI command for performing semantic workspace searches
 - Added batch evaluation with judge_batch(states, questions) / judgeBatch(...), including bounded background execution, incremental result and status access, per-item failure reporting, and the ability to wait for or reattach to jobs across turns or after a reset.
 - Added the jevify magic keyword to have the agent establish an evaluation rubric before classifying bulk items and inspect only items flagged by the judge.
 - Added omp web-search as an alias for omp search.
@@ -31,6 +33,8 @@
 
 ### Changed
 
+- Updated agent system prompts to prioritize the `find` tool over `grep` and `glob` for behavioral lookups
+- Refined system prompt instructions for XML tag handling and agent persona
 - Updated sloppy edit tool syntax to use plain text headers instead of XML tags
 - Improved startup performance by validating provider-qualified model selectors against only the relevant provider catalog.
 - Reduced launch time for npm and compiled builds by embedding the model catalog more efficiently.
