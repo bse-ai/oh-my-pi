@@ -8,7 +8,19 @@ import type { Api, ModelSpec } from "@oh-my-pi/pi-catalog/types";
 import { applyGeneratedModelPolicies } from "../scripts/generated-policies";
 
 const DAYBREAK_EFFORTS = [Effort.Low, Effort.Medium, Effort.High, Effort.XHigh, Effort.Max];
-const DAYBREAK_MODELS = seedModels<"openai-responses">("openai");
+/**
+ * Chat entries only, selected by wire API rather than by `kind` — the seed leaves
+ * `kind` undefined on every row, so only the API distinguishes them.
+ *
+ * The `openai` seed gained `openai-transcriptions` (whisper-1, gpt-4o-transcribe)
+ * and `openai-embeddings` (text-embedding-*) rows with the auth-gateway adapters.
+ * Every assertion below is about the Daybreak/GPT-5.6 chat curation — its alias
+ * list, its long-context pricing tiers, its effort ladder — and an embedding model
+ * has none of those, so sweeping them in turns this into a failure about the seed
+ * growing rather than about the curation. Narrowing here also makes the file's
+ * `seedModels<"openai-responses">` annotation true again.
+ */
+const DAYBREAK_MODELS = seedModels<"openai-responses">("openai").filter(model => model.api === "openai-responses");
 
 describe("OpenAI Daybreak and GPT-5.6 models", () => {
 	test("curates the documented aliases and Cyber snapshot with standard API pricing", () => {

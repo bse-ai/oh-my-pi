@@ -73,9 +73,13 @@ describe("omp models kind filtering", () => {
 		const defaults = await new Models([], TEST_CONFIG).parse(Models);
 		expect(defaults.flags.kind).toBe("chat");
 
-		const invalid = new Models(["--kind", "video"], TEST_CONFIG);
+		// Deliberately not a real kind name: this used to assert on "video", which
+		// became a valid kind when the video-generation endpoints landed, turning a
+		// rejection test into a failure. Anything MODEL_KINDS could plausibly gain
+		// is the wrong choice here.
+		const invalid = new Models(["--kind", "not-a-kind"], TEST_CONFIG);
 		await expect(invalid.parse(Models)).rejects.toThrow(
-			`Expected --kind to be one of: ${[...MODEL_KINDS, "all"].join(", ")}; got "video"`,
+			`Expected --kind to be one of: ${[...MODEL_KINDS, "all"].join(", ")}; got "not-a-kind"`,
 		);
 	});
 

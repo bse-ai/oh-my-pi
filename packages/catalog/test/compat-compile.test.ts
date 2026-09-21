@@ -368,7 +368,12 @@ describe("provider catalog grammar", () => {
 		expect(() => compileKindApis('\t\timage "openai-images"\n\t\timage "openai-responses"')).toThrow(
 			/directive `image` has a malformed value/,
 		);
-		expect(() => compileKindApis('\t\tvideo "openai-images"')).toThrow(/unexpected node `video` under `kind-apis`/);
+		// Not a plausible future kind: this asserted on `video` until the
+		// video-generation endpoints added it to KIND_API_KINDS, at which point a
+		// rejection test started failing because the rejection correctly stopped.
+		expect(() => compileKindApis('\t\ttelepathy "openai-images"')).toThrow(
+			/unexpected node `telepathy` under `kind-apis`/,
+		);
 		expect(() => compileKindApis('\t\timage "openai-images" "openai-responses"')).toThrow(
 			/directive `image` has a malformed value/,
 		);
