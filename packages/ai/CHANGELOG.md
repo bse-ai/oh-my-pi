@@ -10,6 +10,8 @@
 
 - Fixed a revoked LiteLLM virtual key being reported as unknown rather than failed: when every management route rejects the credential the provider now throws the auth status, so `checkCredentials()` fails and the cached last-good budget is purged instead of served indefinitely ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
 - Fixed a nearly exhausted LiteLLM user budget being hidden behind a healthier key budget when both share a `budget_duration`; the most-used limit now wins that window ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
+## [18.2.7] - 2026-09-21
+
 ### Breaking Changes
 
 - Anthropic streaming and provider request helpers must now be imported from `@oh-my-pi/pi-ai/providers/anthropic` instead of the package root.
