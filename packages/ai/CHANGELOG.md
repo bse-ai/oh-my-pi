@@ -10,6 +10,24 @@
 
 - Fixed a revoked LiteLLM virtual key being reported as unknown rather than failed: when every management route rejects the credential the provider now throws the auth status, so `checkCredentials()` fails and the cached last-good budget is purged instead of served indefinitely ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
 - Fixed a nearly exhausted LiteLLM user budget being hidden behind a healthier key budget when both share a `budget_duration`; the most-used limit now wins that window ([#11711](https://github.com/can1357/oh-my-pi/pull/11711) by [@bse-ai](https://github.com/bse-ai)).
+- Added `TypeSafeJudgeOptions.headers`, sent on every System One judgment request so proxy gateways can require routing or custom authentication headers.
+- Added support for text embeddings
+- Added support for document reranking
+- Added support for video generation
+- Added support for image generation across multiple providers
+- Added support for audio speech synthesis
+- Added support for audio transcription services
+- Added System One judgment API route
+
+### Changed
+
+- Updated API response headers to report costs based on usage totals
+- Added optional `kind` field to model list responses
+
+### Fixed
+
+- Fixed detection of Claude usage limit errors
+
 ## [18.2.7] - 2026-09-21
 
 ### Breaking Changes
