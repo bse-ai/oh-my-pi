@@ -5,6 +5,8 @@
 ### Added
 
 - Added `ANTHROPIC_CACHE_REFRESH_HOSTS` to opt Anthropic-protocol gateways (`ANTHROPIC_BASE_URL`, `models.yml` `baseUrl`) into the idle prompt-cache keep-alive, which previously ran only against the official Anthropic API ([#12574](https://github.com/can1357/oh-my-pi/pull/12574) by [@bse-ai](https://github.com/bse-ai)).
+## [18.2.7] - 2026-09-21
+
 ### Breaking Changes
 
 - Anthropic streaming and provider request helpers must now be imported from `@oh-my-pi/pi-ai/providers/anthropic` instead of the package root.
