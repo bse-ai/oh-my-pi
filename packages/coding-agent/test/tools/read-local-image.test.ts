@@ -29,7 +29,12 @@ function expectVideoProbeFailure(text: string, fileName: string): void {
 		expect(text).toContain("Could not probe video");
 		expect(text).toContain(fileName);
 	} else {
-		expect(text).toContain("requires ffprobe");
+		// Verb-agnostic on purpose. The hint reads "Video operations require
+		// ffprobe, which was not found on PATH", and pinning "requires ffprobe"
+		// made this fail on runners without ffprobe — which is the only branch
+		// that ever reaches this line — for a grammatical detail rather than a
+		// behavioural one. What matters is that the hint names the dependency.
+		expect(text).toMatch(/requires? ffprobe/);
 	}
 	expect(text).not.toContain("\u0000");
 }
