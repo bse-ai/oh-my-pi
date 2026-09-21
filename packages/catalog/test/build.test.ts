@@ -985,8 +985,15 @@ describe("OpenRouter model discovery", () => {
 		const routing = { only: ["anthropic"], order: ["anthropic"] };
 		const staticModel = openrouterSpec({ compat: { openRouterRouting: routing } });
 		const options = openrouterModelManagerOptions({
+			// Serve this roster ONLY for the chat endpoint. Discovery now also polls
+			// /images/models, /videos/models, /embeddings/models and two
+			// ?output_modalities= variants; answering those with the same chat row
+			// re-ingests it as a runner kind and the last endpoint wins, which is
+			// how this fixture started yielding an embedding model. Only the chat
+			// roster is exactly /api/v1/models — every kind endpoint differs by
+			// path or query.
 			fetch: async url =>
-				String(url).endsWith("/images/models")
+				!String(url).endsWith("/api/v1/models")
 					? Response.json({ data: [] })
 					: new Response(
 							JSON.stringify({
@@ -1037,7 +1044,8 @@ describe("OpenRouter model discovery", () => {
 	it("maps OpenRouter's advertised reasoning effort ladder, default, and mandatory state", async () => {
 		const options = openrouterModelManagerOptions({
 			fetch: async url =>
-				String(url).endsWith("/images/models")
+				// Chat roster only — see the note on the refresh test above.
+				!String(url).endsWith("/api/v1/models")
 					? Response.json({ data: [] })
 					: Response.json({
 							data: [
