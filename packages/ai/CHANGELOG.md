@@ -5,6 +5,24 @@
 ### Added
 
 - Extended the idle Anthropic prompt-cache keep-alive from a fixed 3 refreshes to a 45-minute idle budget, so a prefix stays cached across longer think-time gaps ([#12615](https://github.com/can1357/oh-my-pi/pull/12615) by [@bse-ai](https://github.com/bse-ai)).
+## [18.2.8] - 2026-09-21
+
+### Added
+
+- Added support for text embeddings, document reranking, video generation, image generation across multiple providers, audio speech synthesis, and audio transcription services.
+- Added support for the System One judgment API, including configurable request headers for proxy routing and custom authentication.
+
+### Changed
+
+- Updated API response cost reporting to use aggregate usage totals.
+- Model list responses now optionally include a model kind.
+
+### Fixed
+
+- Fixed detection of Claude usage-limit errors.
+
+## [18.2.7] - 2026-09-21
+
 ### Breaking Changes
 
 - Anthropic streaming and provider request helpers must now be imported from `@oh-my-pi/pi-ai/providers/anthropic` instead of the package root.
