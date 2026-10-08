@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Fixed native Bedrock Claude Haiku 5.5 requests with reasoning off silently enabling adaptive thinking; main and helper requests now send explicit disabled thinking with low effort while preserving AWS authentication and forced tool choice.
+- Fixed Claude Haiku 5.5 requests silently enabling adaptive thinking when reasoning is off, on native Bedrock (main and helper calls) and the Anthropic API; conversations whose earlier effort controls rule out disabled thinking fall back to lowest-effort adaptive thinking instead of failing ([#14996](https://github.com/can1357/oh-my-pi/pull/14996) by [@bse-ai](https://github.com/bse-ai)).
 
 ## [18.8.5] - 2026-10-08
 
