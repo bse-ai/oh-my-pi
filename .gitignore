@@ -94,3 +94,6 @@ packages/coding-agent/bench/boot-baseline.json
 /.bazelrc.user
 
 .parity/
+
+# Fork-only qualification outputs; never source or a published release.
+/fork-artifacts/

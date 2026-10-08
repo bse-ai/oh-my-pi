@@ -7,6 +7,12 @@ provider "amazon-bedrock" {
 	// (`amazon-bedrock.ts`), so a block can land above text already rendered.
 	stream-revision "possible"
 	class "anthropic" {
+		family "haiku" {
+			revision ">=5.5 <6" {
+				// Omission uses adaptive thinking; Off must be explicit.
+				disabled-thinking "disabled"
+			}
+		}
 		family "opus" {
 			revision ">=4.6 <4.7" {
 				thinking-mode "anthropic-adaptive"

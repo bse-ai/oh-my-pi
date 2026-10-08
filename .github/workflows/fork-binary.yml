@@ -1,0 +1,49 @@
+name: Fork binary qualification
+
+on:
+  pull_request:
+    branches: [main, qualification/18.8.5]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  binary:
+    if: github.repository == 'bse-ai/oh-my-pi'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-22.04, target: linux-x64 }
+          - { os: ubuntu-24.04-arm, target: linux-arm64 }
+          - { os: windows-2025, target: win32-x64 }
+          - { os: windows-11-arm, target: win32-arm64 }
+          - { os: macos-15-intel, target: darwin-x64 }
+          - { os: macos-15, target: darwin-arm64 }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: '1.4.2'
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - name: Build and smoke-test exact fork artifact
+        run: bun scripts/build-fork-binary.ts ${{ matrix.target }}
+      - name: Verify serializer and native credential behavior
+        run: bun test packages/ai/test/bedrock-haiku-thinking-off.test.ts scripts/build-fork-binary.test.ts
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: fork-binary-${{ matrix.target }}
+          path: |
+            fork-artifacts/${{ matrix.target }}/omp-*
+            fork-artifacts/${{ matrix.target }}/SHA256SUMS.txt
+            fork-artifacts/${{ matrix.target }}/build-provenance.json
+            fork-artifacts/${{ matrix.target }}/LICENSE
+            fork-artifacts/${{ matrix.target }}/THIRD-PARTY-NOTICES.txt
+          if-no-files-found: error
+          retention-days: 14
