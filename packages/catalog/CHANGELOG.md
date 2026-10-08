@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Added the native Bedrock Claude Haiku 5.5 disabled-thinking policy, leaving other Claude model policies unchanged.
+
 ## [18.8.5] - 2026-10-08
 
 ### Breaking Changes

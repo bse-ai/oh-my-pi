@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed native Bedrock Claude Haiku 5.5 requests with reasoning off silently enabling adaptive thinking; main and helper requests now send explicit disabled thinking with low effort while preserving AWS authentication and forced tool choice.
+
 ## [18.8.5] - 2026-10-08
 
 ### Added

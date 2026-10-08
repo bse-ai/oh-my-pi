@@ -1,0 +1,31 @@
+{
+	"upstreamVersion": "18.8.5",
+	"upstreamCommit": "4bf0d9d3e9f910ef4af25dec9733fbb4d6912d4c",
+	"version": "18.8.5-arcadia.1",
+	"nativePackages": {
+		"linux-x64": {
+			"url": "https://registry.npmjs.org/@oh-my-pi/pi-natives-linux-x64/-/pi-natives-linux-x64-18.8.5.tgz",
+			"integrity": "sha512-XtxSGlQfwfirIo4qdXDxiVR8yjEOfKHIAb8y2dWqok7iMw6PkkvrVMvR6SbiB0TXjq6Lk9RyAZwMYfx/wd3EcQ=="
+		},
+		"linux-arm64": {
+			"url": "https://registry.npmjs.org/@oh-my-pi/pi-natives-linux-arm64/-/pi-natives-linux-arm64-18.8.5.tgz",
+			"integrity": "sha512-wBEeBdWu4+QVlAwaIs+77I9j99xUSwrz0Mx+w/nL39HUqmtnvy0/hk6tOvafD3ZcSAmPUDqlbyiuq04K+Inp6Q=="
+		},
+		"darwin-x64": {
+			"url": "https://registry.npmjs.org/@oh-my-pi/pi-natives-darwin-x64/-/pi-natives-darwin-x64-18.8.5.tgz",
+			"integrity": "sha512-Vant2njT/PR9oQjasDeax3FuQUjV4K5nf6RCtjmsDfzTyvX4bSPyxMKwMLcv1u5U71rXP1KAwD7u+kkOiLxauw=="
+		},
+		"darwin-arm64": {
+			"url": "https://registry.npmjs.org/@oh-my-pi/pi-natives-darwin-arm64/-/pi-natives-darwin-arm64-18.8.5.tgz",
+			"integrity": "sha512-g7oWDf1LUm4DnyvQ2MjmHXbZF22HqnXJEO3o5UK+cEBE8s+8C6m8Twe7q0l4ZLsBZrxYU/mYuF+77hchpMc7rQ=="
+		},
+		"win32-x64": {
+			"url": "https://registry.npmjs.org/@oh-my-pi/pi-natives-win32-x64/-/pi-natives-win32-x64-18.8.5.tgz",
+			"integrity": "sha512-xoffJ6RGaEll5hKs5MFbDojdPVzAYy83dkN9lZab8L1HoimzKgl08RftXSClA6jYvUGxxWfr9MfqW3FR1qIhbQ=="
+		},
+		"win32-arm64": {
+			"url": "https://registry.npmjs.org/@oh-my-pi/pi-natives-win32-arm64/-/pi-natives-win32-arm64-18.8.5.tgz",
+			"integrity": "sha512-FVpN7d9wq+H8YfutvdnwVaHcBxHuAvA4bdg61QjTAVNnLyWOVcJUMsQKWy4FXbJsB34ruTQVQZO5MAjOgav1KQ=="
+		}
+	}
+}
