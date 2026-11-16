@@ -1,0 +1,81 @@
+name: mac-check
+
+# One-off fork check: run two feature branches' tests on a real macOS arm64 runner.
+# Runs only on pushes to the mac-check branch of this fork.
+
+on:
+   push:
+      branches: [mac-check]
+
+permissions:
+   contents: read
+
+jobs:
+   mac:
+      name: ${{ matrix.name }}
+      runs-on: macos-15
+      strategy:
+         fail-fast: false
+         matrix:
+            include:
+               - name: omp-protect-peer-sessions
+                 kind: peer
+                 ref: ec83e800d272616479130096c39f475ed398c02d
+               - name: omp-record-signal-sender
+                 kind: signal
+                 ref: 9e25556bd84886b892006ce2be35365b744e8312
+      steps:
+         - name: Platform
+           run: |
+              sw_vers
+              uname -m
+              uname -a
+         - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+           with:
+              ref: ${{ matrix.ref }}
+         - name: Checked-out commit
+           run: git log -1 --format='%H %s'
+         - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+           with:
+              bun-version: 1.4.4
+         - name: Install dependencies
+           run: bun install --frozen-lockfile
+         - name: Rust toolchain
+           run: |
+              # Homebrew's rustup-init can shadow the rustup proxies; put the proxies first.
+              echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+              export PATH="$HOME/.cargo/bin:$PATH"
+              rustup toolchain install
+              rustup show active-toolchain
+              rustc -vV
+              cargo -V
+
+         # --- omp-protect-peer-sessions: Rust tests in pi-builtins and pi-shell ---
+         - name: pi-builtins proc_snapshot and proc_match tests
+           if: matrix.kind == 'peer'
+           run: cargo test -p pi-builtins --lib -- proc_snapshot proc_match
+         - name: pi-shell process_control tests
+           if: matrix.kind == 'peer' && !cancelled()
+           run: cargo test -p pi-shell --lib -- shell::tests::process_control
+
+         # --- omp-record-signal-sender: build the addon, then TypeScript and Rust tests ---
+         - name: Build host addon
+           if: matrix.kind == 'signal'
+           working-directory: packages/natives
+           run: bun run build:bindings
+         - name: Addon exposes captureSignalSender
+           if: matrix.kind == 'signal' && !cancelled()
+           working-directory: packages/utils
+           run: |
+              bun -e 'import * as n from "@oh-my-pi/pi-natives"; const t = typeof n.captureSignalSender; console.log("captureSignalSender:", t, "takeSignalSender:", typeof n.takeSignalSender); if (t !== "function") process.exit(1)'
+         - name: utils postmortem-signal-sender test
+           if: matrix.kind == 'signal' && !cancelled()
+           working-directory: packages/utils
+           run: bun test test/postmortem-signal-sender.test.ts
+         - name: coding-agent session-exit-diagnostics test
+           if: matrix.kind == 'signal' && !cancelled()
+           working-directory: packages/coding-agent
+           run: bun test test/session-exit-diagnostics.test.ts
+         - name: pi-builtins proc_snapshot tests (file touched by this branch)
+           if: matrix.kind == 'signal' && !cancelled()
+           run: cargo test -p pi-builtins --lib -- proc_snapshot
