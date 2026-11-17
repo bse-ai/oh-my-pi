@@ -18,9 +18,13 @@ jobs:
          fail-fast: false
          matrix:
             ref_set:
-               - { name: omp-protect-peer-sessions, kind: peer, ref: cc08dbf9dd19fdb83dab72532c0153e9f2568994 }
+               - { name: omp-protect-peer-sessions, kind: peer, ref: 78031c06f5b9b0f575b9a7bfaedcc07c96ecef10 }
                - { name: omp-record-signal-sender, kind: signal, ref: 849c3e84a6a8aef9797c4a44589b1a13011070e7 }
             runner: [macos-15, macos-15-intel]
+            # The Intel signal job for this commit is already running.
+            exclude:
+               - runner: macos-15-intel
+                 ref_set: { name: omp-record-signal-sender, kind: signal, ref: 849c3e84a6a8aef9797c4a44589b1a13011070e7 }
       steps:
          - name: Platform
            run: |
