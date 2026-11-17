@@ -18,9 +18,9 @@ jobs:
          fail-fast: false
          matrix:
             ref_set:
-               - { name: omp-protect-peer-sessions, kind: peer, ref: fb0ac4e792331fc597bbdb196c0c507efb93757b }
-               - { name: omp-record-signal-sender, kind: signal, ref: a3a3b8c2293402f190581cc183bc3a864e3d3c06 }
-            runner: [macos-15, macos-14, macos-15-intel]
+               - { name: omp-protect-peer-sessions, kind: peer, ref: b8cfb42e12e56a5ca5d93106f9c4137fa859727e }
+               - { name: omp-record-signal-sender, kind: signal, ref: c028dce8d2cba123cae65a842457dd5ae578fad2 }
+            runner: [macos-15, macos-15-intel]
       steps:
          - name: Platform
            run: |
@@ -73,6 +73,9 @@ jobs:
            if: matrix.ref_set.kind == 'signal' && !cancelled()
            working-directory: packages/coding-agent
            run: bun test test/session-exit-diagnostics.test.ts
+         - name: pi-natives signal_sender race test
+           if: matrix.ref_set.kind == 'signal' && !cancelled()
+           run: cargo test -p pi-natives --lib -- signal_sender
          - name: pi-builtins proc_snapshot tests (file touched by this branch)
            if: matrix.ref_set.kind == 'signal' && !cancelled()
            run: cargo test -p pi-builtins --lib -- proc_snapshot
