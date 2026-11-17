@@ -18,8 +18,8 @@ jobs:
          fail-fast: false
          matrix:
             ref_set:
-               - { name: omp-protect-peer-sessions, kind: peer, ref: b8cfb42e12e56a5ca5d93106f9c4137fa859727e }
-               - { name: omp-record-signal-sender, kind: signal, ref: c028dce8d2cba123cae65a842457dd5ae578fad2 }
+               - { name: omp-protect-peer-sessions, kind: peer, ref: cc08dbf9dd19fdb83dab72532c0153e9f2568994 }
+               - { name: omp-record-signal-sender, kind: signal, ref: 849c3e84a6a8aef9797c4a44589b1a13011070e7 }
             runner: [macos-15, macos-15-intel]
       steps:
          - name: Platform
